@@ -1,6 +1,6 @@
 const { app } = require('@azure/functions');
+require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
-
 
 app.http('Stripe-checkout', {
     methods: ['GET', 'POST'],
@@ -38,21 +38,20 @@ app.http('Stripe-checkout', {
               success_url: 'http://localhost:4280/home',
               cancel_url: 'http://localhost:4280/home',
             });
-        
+            context.log(session)
             return {
               headers: {
                 "Access-Control-Allow-Origin": "*", // Set this to the specific origin(s) allowed to access the function.
                 "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Headers": " -Type, Authorization",
                 "Access-Control-Allow-Credentials": true // Enable credentials support
               },
               status: 200,
-                sessionId: session.id,
-                sessionUrl: session.url,
+              body: JSON.stringify(session)
               
             };
           } catch (error) {
-            context.log(error.message);
+            context.log(error);
             return {
               headers: {
                 "Access-Control-Allow-Origin": "*", // Set this to the specific origin(s) allowed to access the function.
